@@ -1,0 +1,54 @@
+name: CI
+on:
+    push:
+        branches: [dev2]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Set up jdk
+              uses: actions/setup-java@v4
+              with:
+                  distribution: "adopt"
+                  java-version: "17"
+
+            - name: Setup client
+              env:
+                  CLIENT_INFO: ${{ secrets.CLIENT_INFO }}
+              run: |
+                  echo -e "${CLIENT_INFO}" > client.properties
+              shell: bash
+
+            - name: Change wrapper permissions
+              run: chmod +x ./gradlew
+              shell: bash
+            - name: Checkout submodules
+              run: git submodule update --init --recursive
+              shell: bash
+            - name: Download app deps
+              run: ./gradlew androidDependencies
+              shell: bash
+
+            - name: Build
+              run: ./gradlew clean assembleDebug
+              shell: bash
+
+            - name: Fetch public keystore
+              run: wget https://github.com/tytydraco/public-keystore/raw/main/public.jks
+              shell: bash
+
+            - name: Sign APK
+              run: |
+                  apksigner="$(find $ANDROID_SDK_ROOT/build-tools -name apksigner | sort -r | head -n 1)"
+                  "$apksigner" sign --ks public.jks --ks-key-alias public --ks-pass pass:public --key-pass pass:public --in ./app/build/outputs/apk/debug/app-debug.apk --out ./app/build/outputs/apk/debug/app-debug.apk
+              shell: bash
+
+            - name: Upload APK
+              uses: actions/upload-artifact@v4
+              with:
+                  name: gh4a-debug
+                  path: ./app/build/outputs/apk/debug/app-debug.apk

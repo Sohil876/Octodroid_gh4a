@@ -1,0 +1,38 @@
+name: CI
+on:
+    pull_request:
+        branches: [dev]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Set up jdk
+              uses: actions/setup-java@v4
+              with:
+                  distribution: "adopt"
+                  java-version: "17"
+
+            - name: Setup client
+              env:
+                  CLIENT_INFO: ${{ secrets.CLIENT_INFO }}
+              run: |
+                  echo -e "${CLIENT_INFO}" > client.properties
+              shell: bash
+
+            - name: Change wrapper permissions
+              run: chmod +x ./gradlew
+              shell: bash
+            - name: Checkout submodules
+              run: git submodule update --init --recursive
+              shell: bash
+            - name: Download app deps
+              run: ./gradlew androidDependencies
+              shell: bash
+
+            - name: Build
+              run: ./gradlew clean assembleDebug
+              shell: bash
