@@ -28,12 +28,8 @@
         app:cardElevation="3dp"
         app:strokeWidth="0dp">
 
-        <com.gh4a.widget.LinkHandlingTextView
+        <TextView
             android:id="@+id/tv_title"
-
-        <!--TextView
-            android:id="@+id/tv_state"-->
-
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -43,14 +39,10 @@
             android:paddingRight="16dp"
             android:textAppearance="@style/TextAppearance.VerySmall"
             android:textColor="?android:attr/textColorPrimary"
-
             android:textIsSelectable="true"
             android:fontFamily="sans-serif-condensed"
-            tools:text="Issue title that is long enough to make the content scrollable nice" />
-
             android:background="@android:color/transparent"
-            <!--tools:text="OPEN" /-->
->>>>>>> c0bfd02f8ddaa2e8cab0be369ae0ee7a7ee08847
+            tools:text="OPEN" />
 
     </com.google.android.material.card.MaterialCardView>
 
