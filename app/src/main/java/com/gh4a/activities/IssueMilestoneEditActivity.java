@@ -28,7 +28,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import com.google.android.material.appbar.AppBarLayout;
 
-import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.google.android.material.textfield.TextInputLayout;
 import androidx.fragment.app.DialogFragment;
@@ -114,8 +113,7 @@ public class IssueMilestoneEditActivity extends BasePagerActivity implements
             return;
         }
 
-        LayoutInflater headerInflater =
-                LayoutInflater.from(new ContextThemeWrapper(this, R.style.HeaderTheme));
+        LayoutInflater headerInflater = LayoutInflater.from(this);
         View header = headerInflater.inflate(R.layout.issue_create_header, null);
         addHeaderView(header, false);
 
@@ -161,7 +159,6 @@ public class IssueMilestoneEditActivity extends BasePagerActivity implements
 
         mTitleView.setText(mMilestone.title());
         mDescriptionView.setText(mMilestone.description());
-        updateHighlightColor();
         updateLabels();
         setToolbarScrollable(false);
         adjustTabsForHeaderAlignedFab(true);
@@ -299,13 +296,6 @@ public class IssueMilestoneEditActivity extends BasePagerActivity implements
         ConfirmationDialogFragment.show(this, messageResId, buttonResId, data, "opencloseconfirm");
     }
 
-    private void updateHighlightColor() {
-        boolean closed = mMilestone.state() == IssueState.Closed;
-        transitionHeaderToColor(closed ? R.attr.colorIssueClosed : R.attr.colorIssueOpen,
-                closed ? R.attr.colorIssueClosedDark : R.attr.colorIssueOpenDark);
-        mSaveFab.setState(mMilestone.state());
-    }
-
     private void setDueOn(int year, int month, int day) {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DAY_OF_MONTH, day);
@@ -406,7 +396,6 @@ public class IssueMilestoneEditActivity extends BasePagerActivity implements
                 .compose(RxUtils.wrapForBackgroundTask(this, dialogMessageResId, errorMessage))
                 .subscribe(result -> {
                     mMilestone = result;
-                    updateHighlightColor();
                     supportInvalidateOptionsMenu();
                     setResult(RESULT_OK);
                 }, error -> handleActionFailure("Updating milestone failed", error));

@@ -10,6 +10,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.gh4a.R;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,7 @@ public class SingleChoiceDialogFragment extends DialogFragment
         String[] entryArray = mEntries.toArray(new String[0]);
         int selectedPosition = args.getInt(KEY_SELECTED_POSITION);
 
-        return new AlertDialog.Builder(getContext())
+        return new MaterialAlertDialogBuilder(getContext())
                 .setTitle(args.getInt(KEY_TITLE_RES_ID))
                 .setSingleChoiceItems(entryArray, selectedPosition, this)
                 .setNegativeButton(R.string.cancel, null)

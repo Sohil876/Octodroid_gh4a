@@ -16,10 +16,8 @@
 package com.gh4a;
 
 import android.animation.Animator;
-import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.assist.AssistContent;
@@ -27,6 +25,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -44,9 +43,11 @@ import com.gh4a.activities.IssueActivity;
 import com.gh4a.activities.IssueEditActivity;
 import com.google.android.material.appbar.AppBarLayout;
 
-import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
+import com.google.android.material.elevation.SurfaceColors;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -91,7 +92,6 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import io.reactivex.SingleTransformer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -113,7 +113,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     private AppBarLayout mHeader;
     private ToggleableAppBarLayoutBehavior mHeaderBehavior;
-    private SmoothProgressBar mProgress;
+    private LinearProgressIndicator mProgress;
     private SwipeRefreshLayout mSwipeLayout;
     private DrawerLayout mDrawerLayout;
     private CoordinatorLayout mCoordinatorLayout;
@@ -164,6 +164,9 @@ public abstract class BaseActivity extends AppCompatActivity implements
         if (extras != null) {
             onInitExtras(extras);
         }
+
+        updateStatusBarColor();
+
         super.onCreate(savedInstanceState);
 
         mRxLoader = new RxLoader(this, LoaderManager.getInstance(this));
@@ -206,6 +209,19 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     public void handleActionFailure(String text, Throwable e) {
         handleFailure(text, e);
+    }
+
+    private void updateStatusBarColor() {
+        int elevatedPrimaryColor = SurfaceColors.getColorForElevation(this, 2f);
+        getWindow().setStatusBarColor(elevatedPrimaryColor);
+
+        View view = getWindow().getDecorView();
+        if ((getResources().getConfiguration().uiMode &
+                Configuration.UI_MODE_NIGHT_MASK) != Configuration.UI_MODE_NIGHT_YES) {
+            view.setSystemUiVisibility(view.getSystemUiVisibility() | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        } else {
+            view.setSystemUiVisibility(view.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
     }
 
     private void handleFailure(String text, Throwable e) {
@@ -319,60 +335,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     protected void onInitExtras(Bundle extras) {
 
-    }
-
-    public int getCurrentHeaderColor() {
-        return mProgressColors[0];
-    }
-
-    protected void setHeaderColor(int color, int statusBarColor) {
-        cancelHeaderTransition();
-
-        for (ColorDrawable d : mHeaderDrawables) {
-            d.setColor(color);
-        }
-        for (ColorDrawable d : mStatusBarDrawables) {
-            d.setColor(statusBarColor);
-        }
-        mProgressColors[0] = color;
-        mProgressColors[1] = statusBarColor;
-        mProgress.invalidate();
-        scheduleTaskDescriptionUpdate();
-    }
-
-    protected void transitionHeaderToColor(int colorAttrId, int statusBarColorAttrId) {
-        final AnimatorSet animation = new AnimatorSet();
-        List<Animator> animators = new ArrayList<>();
-        int color = UiUtils.resolveColor(this, colorAttrId);
-        int statusBarColor = UiUtils.resolveColor(this, statusBarColorAttrId);
-
-        for (ColorDrawable d : mHeaderDrawables) {
-            animators.add(createColorTransition(d, color));
-        }
-        for (ColorDrawable d : mStatusBarDrawables) {
-            animators.add(createColorTransition(d, statusBarColor));
-        }
-
-        final ValueAnimator progressAnimator1 = ValueAnimator.ofInt(mProgressColors[0], color);
-        progressAnimator1.setEvaluator(new ArgbEvaluator());
-        animators.add(progressAnimator1);
-        final ValueAnimator progressAnimator2 = ValueAnimator.ofInt(mProgressColors[1], statusBarColor);
-        progressAnimator2.setEvaluator(new ArgbEvaluator());
-        animators.add(progressAnimator2);
-
-        progressAnimator1.addUpdateListener(anim -> {
-            mProgressColors[0] = (int) progressAnimator1.getAnimatedValue();
-            mProgressColors[1] = (int) progressAnimator2.getAnimatedValue();
-            mProgress.invalidate();
-        });
-
-        cancelHeaderTransition();
-
-        animation.playTogether(animators);
-        animation.setDuration(200);
-        animation.start();
-        mHeaderTransition = animation;
-        scheduleTaskDescriptionUpdate();
     }
 
     private void cancelHeaderTransition() {
@@ -500,8 +462,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     public MenuInflater getMenuInflater() {
         if (mMenuInflater == null) {
-            mMenuInflater = new SupportMenuInflater(
-                    new ContextThemeWrapper(this, R.style.HeaderTheme));
+            mMenuInflater = new SupportMenuInflater(this);
         }
         return mMenuInflater;
     }
@@ -725,11 +686,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
     private void setupHeaderDrawable() {
         ensureContent();
 
-        int primaryColor = UiUtils.resolveColor(this, R.attr.colorPrimary);
-        assignBackground(mLeftDrawerHeader, primaryColor);
-        assignBackground(mRightDrawerHeader, primaryColor);
-        assignBackground(mHeader, primaryColor);
-
         int primaryDarkColor = UiUtils.resolveColor(this, R.attr.colorPrimaryDark);
         ColorDrawable d = new ColorDrawable(primaryDarkColor);
         mDrawerLayout.setStatusBarBackground(d);
@@ -741,15 +697,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
                 "color", drawable.getColor(), color);
         animation.setEvaluator(new ArgbEvaluator());
         return animation;
-    }
-
-    private void assignBackground(View view, int color) {
-        if (view == null) {
-            return;
-        }
-        ColorDrawable background = new ColorDrawable(color);
-        view.setBackground(background);
-        mHeaderDrawables.add(background);
     }
 
     private void setupSwipeToRefresh() {
@@ -832,7 +779,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow_left, Gravity.LEFT);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow_right, Gravity.RIGHT);
-        mDrawerLayout.setScrimColor(ContextCompat.getColor(this, R.color.drawer_scrim));
 
         mRightDrawerHeader = mRightDrawer.inflateHeaderView(R.layout.drawer_header_right);
 
@@ -860,7 +806,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
             return null;
         }
         ColorStateList baseColor = ContextCompat.getColorStateList(this, value.resourceId);
-        if (!getTheme().resolveAttribute(R.attr.colorAccent, value, true)) {
+        if (!getTheme().resolveAttribute(R.attr.colorPrimary, value, true)) {
             return null;
         }
         int colorAccent = value.data;
@@ -889,9 +835,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
             return;
         }
         mProgress = findViewById(R.id.progress);
-        mProgressColors[0] = UiUtils.resolveColor(this, R.attr.colorPrimary);
-        mProgressColors[1] = UiUtils.resolveColor(this, R.attr.colorPrimaryDark);
-        mProgress.setSmoothProgressDrawableColors(mProgressColors);
 
         mCoordinatorLayout = findViewById(R.id.coordinator_layout);
         mContentContainer = findViewById(R.id.content_container);

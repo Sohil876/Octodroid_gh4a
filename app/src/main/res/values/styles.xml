@@ -29,7 +29,7 @@
     <style name="TextAppearance.NotificationEmphasized" parent="android:TextAppearance.Material.Notification.Emphasis" />
 
     <style name="TextAppearance.SmallUrl" parent="@android:style/TextAppearance.Small">
-        <item name="android:textColor">?android:attr/textColorLink</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
     <style name="TextAppearance.SmallUrl.Sha">
@@ -46,7 +46,7 @@
     </style>
 
     <style name="MoreButton" parent="SelectableLabel">
-        <item name="android:textColor">?attr/colorAccent</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
         <item name="android:textSize">@dimen/abc_text_size_button_material</item>
         <item name="android:textAllCaps">true</item>
@@ -68,7 +68,7 @@
 
     <style name="HeaderLabel">
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Medium</item>
-        <item name="android:textColor">?attr/colorAccent</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:paddingLeft">@dimen/content_padding</item>
         <item name="android:paddingRight">@dimen/content_padding</item>
         <item name="android:minHeight">48dp</item>
@@ -93,10 +93,6 @@
         <item name="android:paddingRight">@dimen/content_padding</item>
     </style>
 
-    <style name="CardContainer">
-        <item name="android:background">@color/cardview_light_background</item>
-    </style>
-
     <style name="Widget.ActionBar.TabView" parent="Widget.AppCompat.ActionBar.TabView">
         <item name="android:background">@drawable/tab_indicator</item>
     </style>
@@ -115,5 +111,20 @@
         <item name="android:layout_height">48dp</item>
         <item name="android:scaleType">center</item>
     </style>
+
+
+    <style name="CardView.Base" parent="Widget.Material3.CardView.Elevated">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/card_margin</item>
+        <item name="android:layout_marginRight">@dimen/card_margin</item>
+        <item name="android:layout_marginTop">@dimen/card_top_bottom_margin</item>
+        <item name="android:layout_marginBottom">@dimen/card_top_bottom_margin</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="strokeWidth">0dp</item>
+        <item name="cardElevation">0.5dp</item>
+    </style>
+
+    <style name="CardView.DayNight" parent="CardView.Base" />
 
 </resources>

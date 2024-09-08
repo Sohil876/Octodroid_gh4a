@@ -105,7 +105,6 @@ public class PullRequestConversationFragment extends IssueFragmentBase {
                 .merged(pr.merged())
                 .build();
 
-        assignHighlightColor();
         loadCommitStatusesIfOpen(false);
         reloadEvents(false);
     }
@@ -168,19 +167,6 @@ public class PullRequestConversationFragment extends IssueFragmentBase {
         PullRequestBranchInfoView branchContainer = headerView.findViewById(R.id.branch_container);
         branchContainer.bind(mPullRequest.head(), mPullRequest.base(), mHeadReference);
         branchContainer.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    protected void assignHighlightColor() {
-        if (mPullRequest.merged()) {
-            setHighlightColors(R.attr.colorPullRequestMerged, R.attr.colorPullRequestMergedDark);
-        } else if (mPullRequest.state() == IssueState.Closed) {
-            setHighlightColors(R.attr.colorIssueClosed, R.attr.colorIssueClosedDark);
-        } else if (mPullRequest.draft()) {
-            setHighlightColors(R.attr.colorPullRequestDraft, R.attr.colorPullRequestDraftDark);
-        } else {
-            setHighlightColors(R.attr.colorIssueOpen, R.attr.colorIssueOpenDark);
-        }
     }
 
    private void fillStatus(List<StatusWrapper> statuses) {
@@ -310,15 +296,12 @@ public class PullRequestConversationFragment extends IssueFragmentBase {
 
     @Override
     public void editComment(GitHubCommentBase comment) {
-        final @AttrRes int highlightColorAttr = mPullRequest.merged()
-                ? R.attr.colorPullRequestMerged
-                : mPullRequest.state() == IssueState.Closed
-                        ? R.attr.colorIssueClosed : R.attr.colorIssueOpen;
+        // TODO
         Intent intent = comment instanceof ReviewComment
                 ? EditPullRequestCommentActivity.makeIntent(getActivity(), mRepoOwner, mRepoName,
-                mPullRequest.number(), comment.id(), 0L, comment.body(), highlightColorAttr)
+                mPullRequest.number(), comment.id(), 0L, comment.body(), R.attr.colorPrimary)
                 : EditIssueCommentActivity.makeIntent(getActivity(), mRepoOwner, mRepoName,
-                        mIssue.number(), comment.id(), comment.body(), highlightColorAttr);
+                        mIssue.number(), comment.id(), comment.body(), R.attr.colorPrimary);
         mEditLauncher.launch(intent);
     }
 

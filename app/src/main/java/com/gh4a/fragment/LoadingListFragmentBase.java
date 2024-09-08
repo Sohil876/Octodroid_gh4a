@@ -145,12 +145,5 @@ public abstract class LoadingListFragmentBase extends LoadingFragmentBase implem
     }
     protected boolean hasCards() { return false; }
 
-    @Override
-    protected void setHighlightColors(int colorAttrId, int statusBarColorAttrId) {
-        super.setHighlightColors(colorAttrId, statusBarColorAttrId);
-        UiUtils.trySetListOverscrollColor(mRecyclerView, getHighlightColor());
-        mFastScroller.setHandlePressedColor(getHighlightColor());
-    }
-
     protected abstract int getEmptyTextResId();
 }

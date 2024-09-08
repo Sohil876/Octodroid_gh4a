@@ -5,7 +5,7 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
-    <style name="CardContainer">
-        <item name="android:background">@color/cardview_dark_background</item>
+    <style name="CardView.DayNight" parent="CardView.Base">
+        <item name="cardElevation">5dp</item>
     </style>
 </resources>

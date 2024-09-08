@@ -145,7 +145,7 @@ public class HomeActivity extends BaseFragmentPagerActivity implements
         }
 
         @AttrRes int colorResId = checkedItemId == R.id.notifications
-                ? R.attr.colorAccent : android.R.attr.textColorPrimary;
+                ? R.attr.colorPrimary : android.R.attr.textColorPrimary;
         @ColorInt int tint = UiUtils.resolveColor(this, colorResId);
         DrawableCompat.setTint(mNotificationsIndicatorIcon, tint);
         mNotificationsIndicator.setImageDrawable(mNotificationsIndicatorIcon);
@@ -328,11 +328,6 @@ public class HomeActivity extends BaseFragmentPagerActivity implements
     @Override
     protected int[] getTabTitleResIds() {
         return mFactory.getTabTitleResIds();
-    }
-
-    @Override
-    protected int[] getHeaderColorAttrs() {
-        return mFactory.getHeaderColorAttrs();
     }
 
     @Override

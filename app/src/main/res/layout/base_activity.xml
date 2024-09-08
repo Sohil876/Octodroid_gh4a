@@ -15,16 +15,12 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/header"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            android:elevation="2dp">
+            android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.Toolbar
+            <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?actionBarSize"
-                android:theme="?attr/actionBarTheme"
-                app:popupTheme="?attr/actionBarPopupTheme" />
+                android:layout_height="?actionBarSize" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -42,18 +38,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:layout_marginTop="2dp"
                         android:id="@+id/progress"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:indeterminate="true"
-                        android:visibility="gone"
-                        app:spb_interpolator="spb_interpolator_acceleratedecelerate"
-                        app:spb_progressiveStart_activated="true"
-                        app:spb_progressiveStart_speed="1.5"
-                        app:spb_progressiveStop_speed="3.4"
-                        app:spb_sections_count="6"
-                        app:spb_speed="1.0" />
+                        android:visibility="gone" />
 
                     <com.gh4a.widget.LinkHandlingTextView
                         android:id="@android:id/empty"

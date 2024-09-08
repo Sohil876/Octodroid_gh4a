@@ -122,12 +122,6 @@ public class IssueListActivity extends BaseFragmentPagerActivity implements
         R.string.open, R.string.closed, R.string.merged
     };
 
-    private static final int[][] HEADER_COLOR_ATTRS = new int[][] {
-        { R.attr.colorIssueOpen, R.attr.colorIssueOpenDark },
-        { R.attr.colorIssueClosed, R.attr.colorIssueClosedDark },
-        { R.attr.colorPullRequestMerged, R.attr.colorPullRequestMergedDark }
-    };
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         // We're restoring instance state before calling super.onCreate() because some of the fields
@@ -240,11 +234,6 @@ public class IssueListActivity extends BaseFragmentPagerActivity implements
             mCreateFab.setScaleY(openFraction);
             mCreateFab.setVisibility(openFraction == 0 ? View.INVISIBLE : View.VISIBLE);
         }
-    }
-
-    @Override
-    protected int[][] getTabHeaderColorAttrs() {
-        return HEADER_COLOR_ATTRS;
     }
 
     @Override

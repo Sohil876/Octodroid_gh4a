@@ -4,44 +4,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    tools:background="@color/issue_open"
-    tools:theme="@style/HeaderTheme">
+    android:orientation="vertical">
 
-    <com.gh4a.widget.VerticalTextView
-        android:id="@+id/tv_state"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:gravity="bottom|center"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:textAppearance="@style/TextAppearance.VerySmall"
-        android:textColor="?android:attr/textColorPrimary"
-        tools:text="OPEN" />
+        android:layout_marginVertical="5dp"
+        android:ellipsize="marquee"
+        android:paddingHorizontal="10dp"
+        android:singleLine="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textIsSelectable="true"
+        tools:text="Issue title that is long enough to make the content scrollable nice" />
 
-    <HorizontalScrollView
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:overScrollMode="never"
-        android:paddingBottom="8dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="8dp">
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        app:cardElevation="3dp"
+        app:strokeWidth="0dp">
 
         <com.gh4a.widget.LinkHandlingTextView
             android:id="@+id/tv_title"
+
+        <!--TextView
+            android:id="@+id/tv_state"-->
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:maxLines="1"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:layout_marginVertical="10dp"
+            android:gravity="bottom|center"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:textAppearance="@style/TextAppearance.VerySmall"
             android:textColor="?android:attr/textColorPrimary"
+
             android:textIsSelectable="true"
             android:fontFamily="sans-serif-condensed"
             tools:text="Issue title that is long enough to make the content scrollable nice" />
 
-    </HorizontalScrollView>
+            android:background="@android:color/transparent"
+            <!--tools:text="OPEN" /-->
+>>>>>>> c0bfd02f8ddaa2e8cab0be369ae0ee7a7ee08847
+
+    </com.google.android.material.card.MaterialCardView>
 
 </LinearLayout>
